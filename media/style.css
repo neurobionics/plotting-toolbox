@@ -8,7 +8,16 @@ body {
 	height: 80vh;
 }
 #controls {
-	margin: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px; /* Optional: Add some margin to the top */
+}
+#buttons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px; /* Optional: Add some margin to the top */
 }
 button {
 	background-color: #007acc;
@@ -16,6 +25,7 @@ button {
 	border: none;
 	padding: 10px;
 	cursor: pointer;
+	margin: 0 10px;
 }
 button:hover {
 	background-color: #005f99;
@@ -26,4 +36,7 @@ select {
 	border: 1px solid #007acc;
 	padding: 5px;
 	margin-right: 10px;
+}
+.traceControl {
+	margin-bottom: 20px; /* Adds 20px margin to the bottom of each .traceControl div */
 }

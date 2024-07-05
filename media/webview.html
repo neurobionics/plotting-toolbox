@@ -7,7 +7,7 @@
 	</head>
 	<body>
 		<div id="plot"></div>
-		<div id="controls" class="flex flex-row items-center">
+		<div id="controls">
 			<div id="traceControls">
 				<div class="traceControl">
 					<label for="xColumn1">X:</label>
@@ -16,19 +16,13 @@
 					<select id="yColumn1"></select>
 				</div>
 			</div>
-			<button onclick="addTrace()">+</button>
-			<button onclick="updatePlot()">Update</button>
 		</div>
-		<script>
-			const vscode = acquireVsCodeApi();
+		<div id="buttons">
+			<button onclick="addTrace()">Add</button>
+			<button onclick="updatePlot()">Update</button>
+			<button onclick="removeTrace()">Remove</button>
+		</div>
 
-			window.addEventListener("message", (event) => {
-				const message = event.data;
-				const data = message.data;
-				const columns = message.columns;
-				initializePlot(data, columns);
-			});
-		</script>
 		<script src="script.js"></script>
 	</body>
 </html>

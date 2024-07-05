@@ -1,5 +1,14 @@
 let traceCount = 1;
 
+const vscode = acquireVsCodeApi();
+
+window.addEventListener("message", (event) => {
+	const message = event.data;
+	const data = message.data;
+	const columns = message.columns;
+	initializePlot(data, columns);
+});
+
 function initializePlot(dataInput, columnsInput) {
 	data = dataInput;
 	columns = columnsInput;
@@ -24,14 +33,22 @@ function addTrace() {
 	const newTraceControl = document.createElement("div");
 	newTraceControl.className = "traceControl";
 	newTraceControl.innerHTML = `
-        <label for="xColumn${traceCount}">X Column (Trace ${traceCount}):</label>
+        <label for="xColumn${traceCount}">X:</label>
         <select id="xColumn${traceCount}"></select>
-        <label for="yColumn${traceCount}">Y Column (Trace ${traceCount}):</label>
+        <label for="yColumn${traceCount}">Y:</label>
         <select id="yColumn${traceCount}"></select>
     `;
 	traceControls.appendChild(newTraceControl);
 	populateSelectOptions(`xColumn${traceCount}`);
 	populateSelectOptions(`yColumn${traceCount}`);
+}
+
+function removeTrace() {
+	if (traceCount > 1) {
+		const traceControls = document.getElementById("traceControls");
+		traceControls.removeChild(traceControls.lastChild);
+		traceCount--;
+	}
 }
 
 function updatePlot() {
@@ -50,7 +67,7 @@ function updatePlot() {
 		});
 	}
 	const layout = {
-		title: "Dynamic Traces Plot",
+		title: "CSV Plotter",
 		plot_bgcolor: "#1e1e1e",
 		paper_bgcolor: "#1e1e1e",
 		font: {
