@@ -7,22 +7,31 @@
 	</head>
 	<body>
 		<div id="plot"></div>
-		<div id="controls">
-			<div id="traceControls">
-				<div class="traceControl">
-					<label for="xColumn1">X:</label>
-					<select id="xColumn1"></select>
-					<label for="yColumn1">Y:</label>
-					<select id="yColumn1"></select>
+		<div id="controls-container">
+			<div id="controls">
+				<div id="traceControls">
+					<div class="traceControl">
+						<label for="label1">Label: </label>
+						<input
+							type="text"
+							id="label1"
+							name="label1"
+							placeholder="Enter label"
+						/>
+						<label for="xColumn1">X = </label>
+						<select id="xColumn1"></select>
+						<label for="yColumn1">Y = </label>
+						<select id="yColumn1"></select>
+					</div>
 				</div>
 			</div>
+			<div id="buttons">
+				<button onclick="addTrace()">Add</button>
+				<button onclick="updatePlot()">Update</button>
+				<button onclick="removeTrace()">Remove</button>
+				<button onclick="savePlot()">Save</button>
+			</div>
 		</div>
-		<div id="buttons">
-			<button onclick="addTrace()">Add</button>
-			<button onclick="updatePlot()">Update</button>
-			<button onclick="removeTrace()">Remove</button>
-		</div>
-
 		<script src="script.js"></script>
 	</body>
 </html>

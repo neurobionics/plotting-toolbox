@@ -65,6 +65,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 			panel.webview.html = html;
 			panel.webview.postMessage({ data, columns });
+
+			panel.webview.onDidReceiveMessage((message) => {
+				switch (message.command) {
+					case "savePlot":
+						vscode.window.showInformationMessage("Saving plot...");
+						savePlot(message.data);
+						break;
+				}
+			});
 		})
 	);
 }
@@ -83,4 +92,24 @@ function getColumnsFromData(data: any[]): string[] {
 		return [];
 	}
 	return Object.keys(data[0]);
+}
+
+function savePlot(data: string, fileName: string = "plot.png") {
+	vscode.window.showInformationMessage(data);
+	data = data.replace(/^data:image\/png;base64,/, "");
+	// Get the root path of the current workspace
+	const workspaceRoot = vscode.workspace.rootPath;
+
+	if (!workspaceRoot) {
+		vscode.window.showErrorMessage("No workspace is open.");
+		return;
+	}
+
+	// Resolve the file path in the current workspace directory
+	const filePath = path.join(workspaceRoot, fileName);
+
+	// Write the binary data to the file
+	fs.writeFile(filePath, data, "base64", function (err) {
+		console.log(err);
+	});
 }

@@ -33,9 +33,11 @@ function addTrace() {
 	const newTraceControl = document.createElement("div");
 	newTraceControl.className = "traceControl";
 	newTraceControl.innerHTML = `
-        <label for="xColumn${traceCount}">X:</label>
+        <label for="label${traceCount}">Label: </label>
+        <input type="text" id="label${traceCount}" name="label${traceCount}" placeholder="Enter label">
+        <label for="xColumn${traceCount}">X = </label>
         <select id="xColumn${traceCount}"></select>
-        <label for="yColumn${traceCount}">Y:</label>
+        <label for="yColumn${traceCount}">Y = </label>
         <select id="yColumn${traceCount}"></select>
     `;
 	traceControls.appendChild(newTraceControl);
@@ -56,6 +58,8 @@ function updatePlot() {
 	for (let i = 1; i <= traceCount; i++) {
 		const xColumn = document.getElementById("xColumn" + i).value;
 		const yColumn = document.getElementById("yColumn" + i).value;
+		const label =
+			document.getElementById("label" + i).value || `Trace ${i}`;
 		const x = data.map((row) => row[xColumn]);
 		const y = data.map((row) => row[yColumn]);
 		plotData.push({
@@ -63,6 +67,7 @@ function updatePlot() {
 			y: y,
 			type: "scatter",
 			mode: "lines",
+			name: label, // Use the label for the legend
 			line: { color: getRandomColor() },
 		});
 	}
@@ -84,4 +89,18 @@ function getRandomColor() {
 		color += letters[Math.floor(Math.random() * 16)];
 	}
 	return color;
+}
+
+function savePlot() {
+	Plotly.toImage("plot", {
+		format: "png",
+		width: 800,
+		height: 600,
+		scale: 2,
+	}).then(function (url) {
+		vscode.postMessage({
+			command: "savePlot",
+			data: url,
+		});
+	});
 }
