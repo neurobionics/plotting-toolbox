@@ -1,148 +1,86 @@
 import * as vscode from "vscode";
+import * as path from "path";
 import * as fs from "fs";
-import csv from "csv-parser";
+import { parse } from "csv-parse/sync";
 
-// This method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
-	console.log("CSV Plotter extension is now active!");
-
-	// Register the command
-	let disposable = vscode.commands.registerCommand(
-		"csv-plotter.plot",
-		async () => {
+	context.subscriptions.push(
+		vscode.commands.registerCommand("csvPlotter.plot", () => {
 			const editor = vscode.window.activeTextEditor;
+
+			let data: any[] = [];
+			let columns: string[] = [];
+
 			if (editor) {
 				const document = editor.document;
 				const fileName = document.fileName;
 
-				if (fileName.endsWith(".csv")) {
-					vscode.window.showInformationMessage(
-						"CSV Plotter command executed!"
-					);
-
-					// Read the CSV file
-					const data: any[] = [];
-					fs.createReadStream(fileName)
-						.pipe(csv())
-						.on("data", (row) => {
-							data.push(row);
-						})
-						.on("end", async () => {
-							// get the column names
-							if (data.length > 0) {
-								const columnNames = Object.keys(data[0]);
-								// Show the QuickPick
-								const xColumn =
-									(await vscode.window.showQuickPick(
-										columnNames,
-										{
-											placeHolder: "Select the X column",
-										}
-									)) || "";
-								const yColumn =
-									(await vscode.window.showQuickPick(
-										columnNames,
-										{
-											placeHolder: "Select the Y column",
-										}
-									)) || "";
-
-								vscode.window.showInformationMessage(
-									`Plotting ${xColumn} vs ${yColumn}`
-								);
-
-								// plot the data in a new tab
-								const panel = vscode.window.createWebviewPanel(
-									"csvPlotter",
-									"CSV Plotter",
-									vscode.ViewColumn.One,
-									{
-										enableScripts: true,
-									}
-								);
-
-								panel.webview.html = getWebviewContent(
-									data,
-									xColumn,
-									yColumn
-								);
-							} else {
-								vscode.window.showErrorMessage(
-									"Please open a CSV file with data!"
-								);
-							}
-						});
-				} else {
+				if (!fileName.endsWith(".csv")) {
 					vscode.window.showErrorMessage(
-						"Please open a CSV file to plot!"
+						"Please open a CSV file to plot"
 					);
+					return;
+				} else {
+					data = getDataFromCSV(fileName);
+					columns = getColumnsFromData(data);
 				}
 			}
-		}
-	);
 
-	context.subscriptions.push(disposable);
+			if (!data || !columns) {
+				vscode.window.showErrorMessage("No data found in the CSV file");
+				return;
+			}
+
+			const panel = vscode.window.createWebviewPanel(
+				"csvPlotter",
+				"CSV Plotter",
+				vscode.ViewColumn.One,
+				{
+					enableScripts: true,
+					localResourceRoots: [
+						vscode.Uri.file(
+							path.join(context.extensionPath, "media")
+						),
+					],
+				}
+			);
+
+			const htmlPath = vscode.Uri.file(
+				path.join(context.extensionPath, "media", "webview.html")
+			);
+			const cssPath = panel.webview.asWebviewUri(
+				vscode.Uri.file(
+					path.join(context.extensionPath, "media", "style.css")
+				)
+			);
+			const jsPath = panel.webview.asWebviewUri(
+				vscode.Uri.file(
+					path.join(context.extensionPath, "media", "script.js")
+				)
+			);
+
+			let html = fs.readFileSync(htmlPath.fsPath, "utf8");
+			html = html.replace('href="style.css"', `href="${cssPath}"`);
+			html = html.replace('src="script.js"', `src="${jsPath}"`);
+
+			panel.webview.html = html;
+			panel.webview.postMessage({ data, columns });
+		})
+	);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+function getDataFromCSV(fileName: string): any[] {
+	const csvContent = fs.readFileSync(fileName, "utf8");
+	const records = parse(csvContent, {
+		columns: true,
+		skip_empty_lines: true,
+	});
+	return records;
+}
 
-function getWebviewContent(data: any[], xColumn: string, yColumn: string) {
-	return `<!DOCTYPE html>
-    <html>
-    <head>
-        <title>CSV Plotter</title>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <style>
-            body {
-                background-color: #1e1e1e;
-                color: #d4d4d4;
-                font-family: Arial, sans-serif;
-            }
-            #plot {
-                width: 100%;
-                height: 100vh;
-            }
-            #controls {
-                margin: 10px;
-            }
-            button {
-                background-color: #007acc;
-                color: white;
-                border: none;
-                padding: 10px;
-                cursor: pointer;
-            }
-            button:hover {
-                background-color: #005f99;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="plot"></div>
-        <script>
-            const x = ${JSON.stringify(data.map((row) => row[xColumn || ""]))};
-            const y = ${JSON.stringify(data.map((row) => row[yColumn || ""]))};
-            const plotData = [
-                {
-                    x: x,
-                    y: y,
-                    type: 'scatter',
-                    mode: 'lines+markers',
-                    marker: { color: 'red' },
-                    line: { color: 'blue' }
-                },
-            ];
-            const layout = {
-                title: '${yColumn} vs ${xColumn}',
-                plot_bgcolor: '#1e1e1e',
-                paper_bgcolor: '#1e1e1e',
-                font: {
-                    color: '#d4d4d4'
-                }
-            };
-            Plotly.newPlot('plot', plotData, layout);
-        </script>
-    </body>
-    </html>`;
+function getColumnsFromData(data: any[]): string[] {
+	if (data.length === 0) {
+		return [];
+	}
+	return Object.keys(data[0]);
 }

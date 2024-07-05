@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CSV Plotter</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	</head>
+	<body>
+		<div id="plot"></div>
+		<div id="controls" class="flex flex-row items-center">
+			<div id="traceControls">
+				<div class="traceControl">
+					<label for="xColumn1">X:</label>
+					<select id="xColumn1"></select>
+					<label for="yColumn1">Y:</label>
+					<select id="yColumn1"></select>
+				</div>
+			</div>
+			<button onclick="addTrace()">+</button>
+			<button onclick="updatePlot()">Update</button>
+		</div>
+		<script>
+			const vscode = acquireVsCodeApi();
+
+			window.addEventListener("message", (event) => {
+				const message = event.data;
+				const data = message.data;
+				const columns = message.columns;
+				initializePlot(data, columns);
+			});
+		</script>
+		<script src="script.js"></script>
+	</body>
+</html>

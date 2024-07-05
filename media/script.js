@@ -1,0 +1,70 @@
+let traceCount = 1;
+
+function initializePlot(dataInput, columnsInput) {
+	data = dataInput;
+	columns = columnsInput;
+	populateSelectOptions("xColumn1");
+	populateSelectOptions("yColumn1");
+	updatePlot(data);
+}
+
+function populateSelectOptions(selectId) {
+	const select = document.getElementById(selectId);
+	columns.forEach((col) => {
+		const option = document.createElement("option");
+		option.value = col;
+		option.text = col;
+		select.appendChild(option);
+	});
+}
+
+function addTrace() {
+	traceCount++;
+	const traceControls = document.getElementById("traceControls");
+	const newTraceControl = document.createElement("div");
+	newTraceControl.className = "traceControl";
+	newTraceControl.innerHTML = `
+        <label for="xColumn${traceCount}">X Column (Trace ${traceCount}):</label>
+        <select id="xColumn${traceCount}"></select>
+        <label for="yColumn${traceCount}">Y Column (Trace ${traceCount}):</label>
+        <select id="yColumn${traceCount}"></select>
+    `;
+	traceControls.appendChild(newTraceControl);
+	populateSelectOptions(`xColumn${traceCount}`);
+	populateSelectOptions(`yColumn${traceCount}`);
+}
+
+function updatePlot() {
+	const plotData = [];
+	for (let i = 1; i <= traceCount; i++) {
+		const xColumn = document.getElementById("xColumn" + i).value;
+		const yColumn = document.getElementById("yColumn" + i).value;
+		const x = data.map((row) => row[xColumn]);
+		const y = data.map((row) => row[yColumn]);
+		plotData.push({
+			x: x,
+			y: y,
+			type: "scatter",
+			mode: "lines",
+			line: { color: getRandomColor() },
+		});
+	}
+	const layout = {
+		title: "Dynamic Traces Plot",
+		plot_bgcolor: "#1e1e1e",
+		paper_bgcolor: "#1e1e1e",
+		font: {
+			color: "#d4d4d4",
+		},
+	};
+	Plotly.newPlot("plot", plotData, layout);
+}
+
+function getRandomColor() {
+	const letters = "0123456789ABCDEF";
+	let color = "#";
+	for (let i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
