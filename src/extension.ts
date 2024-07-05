@@ -1,25 +1,105 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import * as fs from "fs";
+import csv from "csv-parser";
 
 // This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	console.log("CSV Plotter extension is now active!");
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "csv-plotter" is now active!');
+	// Register the command
+	let disposable = vscode.commands.registerCommand(
+		"csv-plotter.plot",
+		async () => {
+			const editor = vscode.window.activeTextEditor;
+			if (editor) {
+				const document = editor.document;
+				const fileName = document.fileName;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('csv-plotter.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CSV Plotter!');
-	});
+				if (fileName.endsWith(".csv")) {
+					vscode.window.showInformationMessage(
+						"CSV Plotter command executed!"
+					);
 
-	context.subscriptions.push(disposable);
+					// Read the CSV file
+
+					const data: any[] = [];
+					fs.createReadStream(fileName)
+						.pipe(csv())
+						.on("data", (row) => {
+							data.push(row);
+						})
+						.on("end", async () => {
+							// get the column names
+							if (data.length > 0) {
+								const columnNames = Object.keys(data[0]);
+								// Show the QuickPick
+								const xColumn =
+									await vscode.window.showQuickPick(
+										columnNames,
+										{
+											placeHolder: "Select the X column",
+										}
+									);
+								const yColumn =
+									await vscode.window.showQuickPick(
+										columnNames,
+										{
+											placeHolder: "Select the Y column",
+										}
+									);
+
+								vscode.window.showInformationMessage(
+									`Plotting ${xColumn} vs ${yColumn}`
+								);
+
+								// plot the data in a new tab
+								const panel = vscode.window.createWebviewPanel(
+									"csvPlotter",
+									"CSV Plotter",
+									vscode.ViewColumn.One,
+									{
+										enableScripts: true,
+									}
+								);
+
+								panel.webview.html = `<!DOCTYPE html>
+								<html>
+								<head>
+									<title>CSV Plotter</title>
+									<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+								</head>
+								<body>
+									<div id="plot"></div>
+									<script>
+										const x = ${JSON.stringify(data.map((row) => row[xColumn || ""]))};
+										const y = ${JSON.stringify(data.map((row) => row[yColumn || ""]))};
+										const data = [
+											{
+												x: x,
+												y: y,
+												type: 'scatter',
+											},
+										];
+										Plotly.newPlot('plot', data);
+									</script>
+								</body>
+								</html>`;
+							} else {
+								vscode.window.showErrorMessage(
+									"Please open a CSV file with data!"
+								);
+							}
+						});
+
+					// Show the column names in the QuickPick
+				} else {
+					vscode.window.showErrorMessage(
+						"Please open a CSV file to plot!"
+					);
+				}
+			}
+		}
+	);
 }
 
 // This method is called when your extension is deactivated
