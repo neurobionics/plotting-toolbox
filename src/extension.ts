@@ -21,7 +21,6 @@ export function activate(context: vscode.ExtensionContext) {
 					);
 
 					// Read the CSV file
-
 					const data: any[] = [];
 					fs.createReadStream(fileName)
 						.pipe(csv())
@@ -34,19 +33,19 @@ export function activate(context: vscode.ExtensionContext) {
 								const columnNames = Object.keys(data[0]);
 								// Show the QuickPick
 								const xColumn =
-									await vscode.window.showQuickPick(
+									(await vscode.window.showQuickPick(
 										columnNames,
 										{
 											placeHolder: "Select the X column",
 										}
-									);
+									)) || "";
 								const yColumn =
-									await vscode.window.showQuickPick(
+									(await vscode.window.showQuickPick(
 										columnNames,
 										{
 											placeHolder: "Select the Y column",
 										}
-									);
+									)) || "";
 
 								vscode.window.showInformationMessage(
 									`Plotting ${xColumn} vs ${yColumn}`
@@ -62,36 +61,17 @@ export function activate(context: vscode.ExtensionContext) {
 									}
 								);
 
-								panel.webview.html = `<!DOCTYPE html>
-								<html>
-								<head>
-									<title>CSV Plotter</title>
-									<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-								</head>
-								<body>
-									<div id="plot"></div>
-									<script>
-										const x = ${JSON.stringify(data.map((row) => row[xColumn || ""]))};
-										const y = ${JSON.stringify(data.map((row) => row[yColumn || ""]))};
-										const data = [
-											{
-												x: x,
-												y: y,
-												type: 'scatter',
-											},
-										];
-										Plotly.newPlot('plot', data);
-									</script>
-								</body>
-								</html>`;
+								panel.webview.html = getWebviewContent(
+									data,
+									xColumn,
+									yColumn
+								);
 							} else {
 								vscode.window.showErrorMessage(
 									"Please open a CSV file with data!"
 								);
 							}
 						});
-
-					// Show the column names in the QuickPick
 				} else {
 					vscode.window.showErrorMessage(
 						"Please open a CSV file to plot!"
@@ -100,7 +80,69 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 	);
+
+	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+function getWebviewContent(data: any[], xColumn: string, yColumn: string) {
+	return `<!DOCTYPE html>
+    <html>
+    <head>
+        <title>CSV Plotter</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <style>
+            body {
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+                font-family: Arial, sans-serif;
+            }
+            #plot {
+                width: 100%;
+                height: 100vh;
+            }
+            #controls {
+                margin: 10px;
+            }
+            button {
+                background-color: #007acc;
+                color: white;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #005f99;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="plot"></div>
+        <script>
+            const x = ${JSON.stringify(data.map((row) => row[xColumn || ""]))};
+            const y = ${JSON.stringify(data.map((row) => row[yColumn || ""]))};
+            const plotData = [
+                {
+                    x: x,
+                    y: y,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    marker: { color: 'red' },
+                    line: { color: 'blue' }
+                },
+            ];
+            const layout = {
+                title: '${yColumn} vs ${xColumn}',
+                plot_bgcolor: '#1e1e1e',
+                paper_bgcolor: '#1e1e1e',
+                font: {
+                    color: '#d4d4d4'
+                }
+            };
+            Plotly.newPlot('plot', plotData, layout);
+        </script>
+    </body>
+    </html>`;
+}
