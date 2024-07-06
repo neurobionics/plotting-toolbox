@@ -1,6 +1,6 @@
 {
 	"name": "csv-plotter",
-	"displayName": "CSV Plotter",
+	"displayName": "Plotting Toolbox",
 	"description": "A VSCode extension that plots values from a CSV file.",
 	"version": "0.0.1",
 	"engines": {
@@ -14,8 +14,8 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "csvPlotter.plot",
-				"title": "Plot: CSV Plotter"
+				"command": "plottingToolbox.plot",
+				"title": "Plot: Plotting Toolbox"
 			}
 		]
 	},

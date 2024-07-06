@@ -54,6 +54,10 @@ function removeTrace() {
 }
 
 function updatePlot() {
+	const plotTitle = document.getElementById("plotTitle").value;
+	const xAxisLabel = document.getElementById("xAxisLabel").value;
+	const yAxisLabel = document.getElementById("yAxisLabel").value;
+
 	const plotData = [];
 	for (let i = 1; i <= traceCount; i++) {
 		const xColumn = document.getElementById("xColumn" + i).value;
@@ -72,7 +76,13 @@ function updatePlot() {
 		});
 	}
 	const layout = {
-		title: "CSV Plotter",
+		title: plotTitle,
+		xaxis: {
+			title: xAxisLabel,
+		},
+		yaxis: {
+			title: yAxisLabel,
+		},
 		plot_bgcolor: "#1e1e1e",
 		paper_bgcolor: "#1e1e1e",
 		font: {

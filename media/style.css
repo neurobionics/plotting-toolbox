@@ -7,30 +7,84 @@ body {
 	background-color: #1e1e1e;
 	color: #d4d4d4;
 	margin: 0;
+	width: 90%;
 }
+
 #plot {
+	width: 90%;
+	height: 75vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+#container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 	width: 100%;
-	height: 80vh;
 }
-#controls {
+
+#plotControls {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+#mainControls {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+#titleLabels {
+	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 20px; /* Optional: Add some margin to the top */
 }
-#buttons {
+
+#plotTitle {
+	width: 100%;
+}
+
+#axisLabels {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+#plotButtons {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 20px; /* Optional: Add some margin to the top */
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
+
+#mainButtons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
 button {
 	background-color: #007acc;
 	color: white;
 	border: none;
 	padding: 10px;
 	cursor: pointer;
-	margin: 0 5px;
+	margin: 3px 3px;
 	border-radius: 2px;
 }
 button:hover {
@@ -43,6 +97,11 @@ select {
 	padding: 5px;
 	margin-right: 10px;
 }
-.traceControl {
-	margin-bottom: 5px; /* Adds 20px margin to the bottom of each .traceControl div */
+
+input {
+	margin: 5px 0px 0 5px;
+	background-color: #1e1e1e;
+	color: #ffffff;
+	border: 1px solid #007acc;
+	padding: 6px;
 }

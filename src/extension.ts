@@ -5,7 +5,7 @@ import { parse } from "csv-parse/sync";
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.commands.registerCommand("csvPlotter.plot", () => {
+		vscode.commands.registerCommand("plottingToolbox.plot", () => {
 			const editor = vscode.window.activeTextEditor;
 
 			let data: any[] = [];
@@ -32,8 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			const panel = vscode.window.createWebviewPanel(
-				"csvPlotter",
-				"CSV Plotter",
+				"plottingToolbox",
+				"Plotting Toolbox",
 				vscode.ViewColumn.One,
 				{
 					enableScripts: true,
