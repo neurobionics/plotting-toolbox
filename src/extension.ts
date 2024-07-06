@@ -83,12 +83,34 @@ function openPlottingPanel(context: vscode.ExtensionContext) {
 	html = html.replace('src="script.js"', `src="${jsPath}"`);
 
 	panel.webview.html = html;
+	panel.webview.onDidReceiveMessage((message) => {
+		switch (message.command) {
+			case "savePlot":
+				vscode.window
+					.showSaveDialog({
+						defaultUri: vscode.Uri.file(
+							path.join(
+								vscode.workspace.rootPath || "",
+								"plot.png"
+							)
+						),
+						filters: {
+							Images: ["png"],
+						},
+					})
+					.then((uri) => {
+						if (uri) {
+							savePlot(message.data, uri.fsPath);
+						}
+					});
+				break;
+		}
+	});
+	updateDataAndColumns(context);
 
 	panel.onDidDispose(() => {
 		panel = undefined;
 	});
-
-	updateDataAndColumns(context);
 }
 
 function getDataFromCSV(fileName: string): any[] {
@@ -109,19 +131,8 @@ function getColumnsFromData(data: any[]): string[] {
 
 function savePlot(data: string, fileName: string = "plot.png") {
 	data = data.replace(/^data:image\/png;base64,/, "");
-	// Get the root path of the current workspace
-	const workspaceRoot = vscode.workspace.rootPath;
-
-	if (!workspaceRoot) {
-		vscode.window.showErrorMessage("No workspace is open.");
-		return;
-	}
-
-	// Resolve the file path in the current workspace directory
-	const filePath = path.join(workspaceRoot, fileName);
-
 	// Write the binary data to the file
-	fs.writeFile(filePath, data, "base64", function (err) {
+	fs.writeFile(fileName, data, "base64", function (err) {
 		console.log(err);
 	});
 }
