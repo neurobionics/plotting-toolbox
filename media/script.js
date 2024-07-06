@@ -1,18 +1,21 @@
 let traceCount = 1;
+let data = [];
+let columns = [];
+
 const vscode = acquireVsCodeApi();
 
 window.addEventListener("message", (event) => {
-	const { data, columns } = event.data;
-	initializePlot(data, columns);
-});
+	const { command, row, columns: newColumns } = event.data;
 
-function initializePlot(dataInput, columnsInput) {
-	this.data = dataInput;
-	this.columns = columnsInput;
-	populateSelectOptions("xColumn1");
-	populateSelectOptions("yColumn1");
-	updatePlot();
-}
+	if (command === "addRow") {
+		data.push(row);
+		updatePlot();
+	} else if (newColumns) {
+		columns = newColumns;
+		populateSelectOptions("xColumn1");
+		populateSelectOptions("yColumn1");
+	}
+});
 
 function populateSelectOptions(selectId) {
 	const select = document.getElementById(selectId);
