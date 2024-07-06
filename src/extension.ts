@@ -95,7 +95,6 @@ function getColumnsFromData(data: any[]): string[] {
 }
 
 function savePlot(data: string, fileName: string = "plot.png") {
-	vscode.window.showInformationMessage(data);
 	data = data.replace(/^data:image\/png;base64,/, "");
 	// Get the root path of the current workspace
 	const workspaceRoot = vscode.workspace.rootPath;

@@ -105,7 +105,7 @@ function savePlot() {
 		format: "png",
 		width: 800,
 		height: 600,
-		scale: 2,
+		scale: 4,
 	}).then(function (url) {
 		vscode.postMessage({
 			command: "savePlot",
