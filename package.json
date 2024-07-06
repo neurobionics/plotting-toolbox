@@ -1,5 +1,5 @@
 {
-	"name": "csv-plotter",
+	"name": "plotting-toolbox",
 	"displayName": "Plotting Toolbox",
 	"description": "A VSCode extension that plots values from a CSV file.",
 	"version": "0.0.1",
