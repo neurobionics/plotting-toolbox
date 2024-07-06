@@ -33,12 +33,11 @@ function addTrace() {
 	const newTraceControl = document.createElement("div");
 	newTraceControl.className = "traceControl";
 	newTraceControl.innerHTML = `
-        <label for="label${traceCount}">Label: </label>
-        <input type="text" id="label${traceCount}" name="label${traceCount}" placeholder="Enter label">
         <label for="xColumn${traceCount}">X = </label>
         <select id="xColumn${traceCount}"></select>
         <label for="yColumn${traceCount}">Y = </label>
         <select id="yColumn${traceCount}"></select>
+		<input type="text" id="label${traceCount}" name="label${traceCount}" placeholder="Enter label">
     `;
 	traceControls.appendChild(newTraceControl);
 	populateSelectOptions(`xColumn${traceCount}`);

@@ -9,18 +9,21 @@
 		<div id="plot"></div>
 		<div id="container">
 			<div id="plotControls">
-				<div class="traceControl">
-					<label for="xColumn1">X = </label>
-					<select id="xColumn1"></select>
-					<label for="yColumn1">Y = </label>
-					<select id="yColumn1"></select>
-					<input
-						type="text"
-						id="label1"
-						name="label1"
-						placeholder="Enter label"
-					/>
+				<div id="traceControls">
+					<div class="traceControl">
+						<label for="xColumn1">X = </label>
+						<select id="xColumn1"></select>
+						<label for="yColumn1">Y = </label>
+						<select id="yColumn1"></select>
+						<input
+							type="text"
+							id="label1"
+							name="label1"
+							placeholder="Enter label"
+						/>
+					</div>
 				</div>
+
 				<div id="plotButtons">
 					<button onclick="addTrace()">Add</button>
 					<button onclick="removeTrace()">Remove</button>
