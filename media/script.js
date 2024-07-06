@@ -87,6 +87,16 @@ function updatePlot() {
 		font: {
 			color: "#d4d4d4",
 		},
+		showlegend: true,
+		legend: {
+			x: 0.5,
+			xanchor: "center",
+			y: 1,
+			yanchor: "center",
+			orientation: "h",
+			bordercolor: "#808080",
+			borderwidth: 1,
+		},
 	};
 	Plotly.newPlot("plot", plotData, layout);
 }

@@ -6,12 +6,12 @@ body {
 	min-height: 100vh;
 	background-color: #1e1e1e;
 	color: #d4d4d4;
-	margin: 0;
+	margin: 10px;
 	width: 90%;
 }
 
 #plot {
-	width: 90%;
+	width: 100%;
 	height: 75vh;
 	display: flex;
 	flex-direction: column;
@@ -22,9 +22,9 @@ body {
 #container {
 	display: flex;
 	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	width: 100%;
+	gap: 10px;
 }
 
 #plotControls {
@@ -32,7 +32,10 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	border: #808080 1px solid;
+	padding: 10px;
+	border-radius: 2px;
+	gap: 10px;
 }
 
 #mainControls {
@@ -40,6 +43,26 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	border: #808080 1px solid;
+	padding: 10px;
+	border-radius: 2px;
+	gap: 10px;
+}
+
+#traceControls {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+
+#labels {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 }
 
 #titleLabels {
@@ -59,22 +82,19 @@ body {
 	align-items: center;
 	justify-content: center;
 	width: 100%;
+	gap: 5px;
 }
 
 #plotButtons {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 10px;
-	margin-bottom: 10px;
 }
 
 #mainButtons {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	width: 100%;
 }
 
@@ -99,7 +119,6 @@ select {
 }
 
 input {
-	margin: 5px 0px 0 5px;
 	background-color: #1e1e1e;
 	color: #ffffff;
 	border: 1px solid #007acc;
