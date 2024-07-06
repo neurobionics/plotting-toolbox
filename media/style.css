@@ -22,6 +22,7 @@ body {
 #container {
 	display: flex;
 	flex-direction: row;
+	/* align-items: center; */
 	justify-content: center;
 	width: 100%;
 	gap: 10px;
@@ -32,9 +33,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	border: #808080 1px solid;
 	padding: 10px;
-	border-radius: 2px;
 	gap: 10px;
 }
 
