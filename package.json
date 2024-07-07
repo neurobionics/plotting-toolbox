@@ -1,22 +1,26 @@
 {
 	"name": "plotting-toolbox",
 	"displayName": "Plotting Toolbox",
-	"description": "A VSCode extension that plots values from a CSV file.",
+	"description": "A VSCode extension to visualize data from log files obtained from robots or simulations. This extension was developed as a part of the Open-Source Leg project. ",
 	"publisher": "opensourceleg",
+	"icon": "assets/icon.png",
 	"author": {
 		"name": "Senthur Ayyappan",
-		"email": "senthura@umich.edu"
+		"email": "senthura@umich.edu",
+		"url": "https://github.com/imsenthur"
 	},
 	"license": "LGPL-2.1-only",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/imsenthur/plotting-toolbox.git"
 	},
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"engines": {
 		"vscode": "^1.91.0"
 	},
 	"categories": [
+		"Visualization",
+		"Data Science",
 		"Other"
 	],
 	"activationEvents": [],
