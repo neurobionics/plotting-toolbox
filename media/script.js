@@ -30,11 +30,31 @@ function addTrace() {
 	const newTraceControl = document.createElement("div");
 	newTraceControl.className = "traceControl";
 	newTraceControl.innerHTML = `
-        <label for="xColumn${traceCount}">X = </label>
-        <select id="xColumn${traceCount}"></select>
-        <label for="yColumn${traceCount}">Y = </label>
-        <select id="yColumn${traceCount}"></select>
-        <input type="text" id="label${traceCount}" name="label${traceCount}" placeholder="Enter label">
+	<div class="traceLabels">
+		<input
+			type="text"
+			id="label${traceCount}"
+			name="label${traceCount}"
+			placeholder="Enter label"
+		/>
+		<input
+			class="colorPicker"
+			type="color"
+			id="color${traceCount}"
+			name="color${traceCount}"
+			value="${getRandomColor()}"
+		/>
+	</div>
+	<div class="traceColumns">
+		<div class="traceX">
+			<label for="xColumn${traceCount}">X = </label>
+			<select id="xColumn${traceCount}"></select>
+		</div>
+		<div class="traceY">
+			<label for="yColumn${traceCount}">Y = </label>
+			<select id="yColumn${traceCount}"></select>
+		</div>
+	</div>	
     `;
 	traceControls.appendChild(newTraceControl);
 	populateSelectOptions(`xColumn${traceCount}`);
@@ -59,6 +79,8 @@ function updatePlot() {
 		const yColumn = document.getElementById(`yColumn${i + 1}`).value;
 		const label =
 			document.getElementById(`label${i + 1}`).value || `Trace ${i + 1}`;
+		const color =
+			document.getElementById(`color${i + 1}`).value || getRandomColor();
 		const x = data.map((row) => row[xColumn]);
 		const y = data.map((row) => row[yColumn]);
 
@@ -68,7 +90,7 @@ function updatePlot() {
 			type: "scatter",
 			mode: "lines",
 			name: label,
-			line: { color: getRandomColor() },
+			line: { color: color },
 		};
 	});
 

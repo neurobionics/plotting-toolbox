@@ -11,22 +11,37 @@
 			<div id="plotControls">
 				<div id="traceControls">
 					<div class="traceControl">
-						<label for="xColumn1">X = </label>
-						<select id="xColumn1"></select>
-						<label for="yColumn1">Y = </label>
-						<select id="yColumn1"></select>
-						<input
-							type="text"
-							id="label1"
-							name="label1"
-							placeholder="Enter label"
-						/>
+						<div class="traceLabels">
+							<input
+								type="text"
+								id="label1"
+								name="label1"
+								placeholder="Enter label"
+							/>
+							<input
+								class="colorPicker"
+								type="color"
+								id="color1"
+								name="color1"
+								value="#ffffff"
+							/>
+						</div>
+						<div class="traceColumns">
+							<div class="traceX">
+								<label for="xColumn1">X = </label>
+								<select id="xColumn1"></select>
+							</div>
+							<div class="traceY">
+								<label for="yColumn1">Y = </label>
+								<select id="yColumn1"></select>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div id="plotButtons">
-					<button onclick="addTrace()">Add Plot</button>
-					<button onclick="removeTrace()">Remove Plot</button>
+					<button onclick="addTrace()">Add</button>
+					<button onclick="removeTrace()">Remove</button>
 				</div>
 			</div>
 
@@ -56,8 +71,8 @@
 					</div>
 				</div>
 				<div id="mainButtons">
-					<button onclick="updatePlot()">Update Plot</button>
 					<button onclick="savePlot()">Save Plot</button>
+					<button onclick="updatePlot()">Update Plot</button>
 				</div>
 			</div>
 		</div>
