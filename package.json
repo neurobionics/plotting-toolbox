@@ -1,7 +1,7 @@
 {
 	"name": "plotting-toolbox",
 	"displayName": "Plotting Toolbox",
-	"description": "A VSCode extension to visualize data from log files obtained from robots or simulations. This extension was developed as a part of the Open-Source Leg project. ",
+	"description": "Visualize data from log files obtained from robots or simulations",
 	"publisher": "opensourceleg",
 	"icon": "assets/icon.png",
 	"author": {
@@ -14,7 +14,7 @@
 		"type": "git",
 		"url": "https://github.com/imsenthur/plotting-toolbox.git"
 	},
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"engines": {
 		"vscode": "^1.91.0"
 	},

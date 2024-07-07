@@ -2,7 +2,7 @@
 
 All notable changes to the "plotting-toolbox" extension will be documented in this file.
 
-## [0.1.1] - 2024-07-07
+## [0.1.2] - 2024-07-07
 
 ### Added
 
