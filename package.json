@@ -16,10 +16,19 @@
 	"activationEvents": [],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "resourceExtname == .csv",
+					"command": "plottingToolbox.plot",
+					"group": "navigation"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "plottingToolbox.plot",
-				"title": "Plot: Plotting Toolbox"
+				"title": "Plotting Toolbox: Plot"
 			}
 		]
 	},

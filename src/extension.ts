@@ -5,28 +5,50 @@ import csv from "csv-parser";
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.commands.registerCommand("plottingToolbox.plot", async () => {
-			const panel = createWebviewPanel(context);
-			setupWebviewContent(panel, context);
-			handleWebviewMessages(panel, context);
+		vscode.commands.registerCommand(
+			"plottingToolbox.plot",
+			async (uri?: vscode.Uri) => {
+				// If uri is not provided (command palette), get the active text editor
+				if (!uri) {
+					const editor = vscode.window.activeTextEditor;
+					if (!editor) {
+						vscode.window.showErrorMessage(
+							"No active editor. Please open a CSV file to plot."
+						);
+						return;
+					}
+					uri = editor.document.uri;
+				}
 
-			const { columns } = await getCSVColumns(context);
+				// Check if the file is a CSV
+				if (!uri.fsPath.toLowerCase().endsWith(".csv")) {
+					vscode.window.showErrorMessage(
+						"Please select a CSV file to plot."
+					);
+					return;
+				}
 
-			if (!columns || columns.length === 0) {
-				vscode.window.showErrorMessage(
-					"No columns found in the CSV file"
-				);
-				return;
+				const panel = createWebviewPanel(context);
+				setupWebviewContent(panel, context);
+				handleWebviewMessages(panel, context);
+
+				const { columns } = await getCSVColumns(uri);
+				if (!columns || columns.length === 0) {
+					vscode.window.showErrorMessage(
+						"No columns found in the CSV file"
+					);
+					return;
+				}
+
+				panel.webview.postMessage({ columns });
+
+				// Stream data to the webview
+				const csvStream = streamCSVData(uri);
+				for await (const row of csvStream) {
+					panel.webview.postMessage({ command: "addRow", row });
+				}
 			}
-
-			panel.webview.postMessage({ columns });
-
-			// Stream data to the webview
-			const csvStream = streamCSVData(context);
-			for await (const row of csvStream) {
-				panel.webview.postMessage({ command: "addRow", row });
-			}
-		})
+		)
 	);
 }
 
@@ -92,28 +114,15 @@ function handleWebviewMessages(
 	});
 }
 
-async function getCSVColumns(
-	context: vscode.ExtensionContext
-): Promise<{ columns: string[] }> {
-	const editor = vscode.window.activeTextEditor;
-	if (!editor) {
-		vscode.window.showErrorMessage(
-			"Editor not found. Please open a CSV file to plot"
-		);
-		return { columns: [] };
-	}
-
-	const document = editor.document;
-	const fileName = document.fileName;
-
-	if (!fileName.endsWith(".csv")) {
-		vscode.window.showErrorMessage("Please open a CSV file to plot");
+async function getCSVColumns(uri: vscode.Uri): Promise<{ columns: string[] }> {
+	if (!uri || !uri.fsPath.toLowerCase().endsWith(".csv")) {
+		vscode.window.showErrorMessage("Please select a CSV file to plot");
 		return { columns: [] };
 	}
 
 	return new Promise((resolve, reject) => {
 		const stream = fs
-			.createReadStream(fileName)
+			.createReadStream(uri.fsPath)
 			.pipe(csv())
 			.on("headers", (headers) => {
 				resolve({ columns: headers });
@@ -126,26 +135,13 @@ async function getCSVColumns(
 	});
 }
 
-async function* streamCSVData(
-	context: vscode.ExtensionContext
-): AsyncIterable<any> {
-	const editor = vscode.window.activeTextEditor;
-	if (!editor) {
-		vscode.window.showErrorMessage(
-			"Editor not found. Please open a CSV file to plot"
-		);
+async function* streamCSVData(uri: vscode.Uri): AsyncIterable<any> {
+	if (!uri || !uri.fsPath.toLowerCase().endsWith(".csv")) {
+		vscode.window.showErrorMessage("Please select a CSV file to plot");
 		return;
 	}
 
-	const document = editor.document;
-	const fileName = document.fileName;
-
-	if (!fileName.endsWith(".csv")) {
-		vscode.window.showErrorMessage("Please open a CSV file to plot");
-		return;
-	}
-
-	const stream = fs.createReadStream(fileName).pipe(csv());
+	const stream = fs.createReadStream(uri.fsPath).pipe(csv());
 	for await (const row of stream) {
 		yield row;
 	}
