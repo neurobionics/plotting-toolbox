@@ -2,6 +2,12 @@
 	"name": "plotting-toolbox",
 	"displayName": "Plotting Toolbox",
 	"description": "A VSCode extension that plots values from a CSV file.",
+	"publisher": "opensourceleg",
+	"author": {
+		"name": "Senthur Ayyappan",
+		"email": "senthura@umich.edu"
+	},
+	"license": "LGPL-2.1-only",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/imsenthur/plotting-toolbox.git"
