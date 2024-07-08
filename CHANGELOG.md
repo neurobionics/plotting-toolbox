@@ -2,6 +2,16 @@
 
 All notable changes to the "plotting-toolbox" extension will be documented in this file.
 
+## [0.1.3] - 2024-07-08
+
+### Changed
+
+-   Minimum supported VS Code version is now `1.70.0`
+
+### Removed
+
+-   Removed `csv-parse` dependency
+
 ## [0.1.2] - 2024-07-07
 
 ### Added
